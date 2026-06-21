@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Safal Bhalerao — AI / LLM Analyst, Data Annotation & Quality Specialist. Building high-quality training data and model-evaluation pipelines for frontier AI." />
+  <meta name="theme-color" content="#05070d" />
+  <meta property="og:title" content="Safal Bhalerao — AI / LLM Analyst" />
+  <meta property="og:description" content="Data annotation, LLM evaluation & quality engineering for frontier AI systems." />
+  <meta property="og:type" content="website" />
+  <title>Safal Bhalerao — AI / LLM Analyst</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Three.js via import map (modules) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- ============ PRELOADER ============ -->
+  <div class="preloader" id="preloader">
+    <div class="preloader__inner">
+      <div class="preloader__mark" aria-hidden="true">
+        <div class="endurance">
+          <span class="pod" style="--n:0"></span>
+          <span class="pod" style="--n:1"></span>
+          <span class="pod" style="--n:2"></span>
+          <span class="pod" style="--n:3"></span>
+          <span class="pod" style="--n:4"></span>
+          <span class="pod" style="--n:5"></span>
+          <span class="pod" style="--n:6"></span>
+          <span class="pod" style="--n:7"></span>
+          <span class="pod" style="--n:8"></span>
+          <span class="pod" style="--n:9"></span>
+          <span class="pod" style="--n:10"></span>
+          <span class="pod" style="--n:11"></span>
+          <span class="endurance__hub"></span>
+        </div>
+      </div>
+      <div class="preloader__count"><span id="loadNum">0</span><span class="preloader__pct">%</span></div>
+      <div class="preloader__label">Initializing neural cosmos</div>
+      <div class="preloader__bar"><span id="loadBar"></span></div>
+    </div>
+  </div>
+
+  <!-- ============ CUSTOM CURSOR ============ -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <!-- ============ GRAIN / NOISE OVERLAY ============ -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ============ 3D BACKGROUND CANVAS ============ -->
+  <canvas id="webgl"></canvas>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <a href="#hero" class="nav__brand" data-cursor="hover">
+      <span class="nav__mark">✳</span> S.B.
+    </a>
+    <nav class="nav__links">
+      <a href="#about" data-cursor="hover">About</a>
+      <a href="#work" data-cursor="hover">Experience</a>
+      <a href="#skills" data-cursor="hover">Skills</a>
+      <a href="#contact" data-cursor="hover">Contact</a>
+    </nav>
+    <a href="mailto:safbhalerao@gmail.com" class="nav__cta" data-cursor="hover">Let's talk</a>
+  </header>
+
+  <!-- ============ SCROLL PROGRESS ============ -->
+  <div class="scrollbar"><span id="scrollProgress"></span></div>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="hero">
+      <div class="hero__eyebrow reveal-up">
+        <span class="dot"></span> Available for frontier AI data work
+      </div>
+      <h1 class="hero__title">
+        <span class="line"><span class="word">SAFAL</span></span>
+        <span class="line"><span class="word">BHALERAO</span></span>
+      </h1>
+      <p class="hero__sub reveal-up">
+        AI&nbsp;/&nbsp;LLM Analyst (AI&nbsp;Trainer&nbsp;/&nbsp;Eval) — Data Annotation &amp; Quality Specialist.
+        I shape the data that teaches machines to think.
+      </p>
+      <div class="hero__scroll reveal-up">
+        <span>Scroll to explore</span>
+        <div class="hero__scroll-line"></div>
+      </div>
+      <div class="hero__meta">
+        <span>EST. BHANDARA, IN</span>
+        <span>14.7° N</span>
+        <span>FRONTIER&nbsp;AI</span>
+      </div>
+    </section>
+
+    <!-- ============ MARQUEE ============ -->
+    <div class="marquee" data-speed="1">
+      <div class="marquee__track">
+        <span>LLM EVALUATION ✳ PROMPT ENGINEERING ✳ DATA ANNOTATION ✳ QUALITY ASSURANCE ✳ RLHF ✳ COMPUTER VISION ✳&nbsp;</span>
+        <span>LLM EVALUATION ✳ PROMPT ENGINEERING ✳ DATA ANNOTATION ✳ QUALITY ASSURANCE ✳ RLHF ✳ COMPUTER VISION ✳&nbsp;</span>
+      </div>
+    </div>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="about" id="about">
+      <span class="section__index">01 — Profile</span>
+      <p class="about__lead reveal-line">
+        AI/ML data-operations professional with hands-on experience across
+        <em>data annotation</em>, <em>quality assurance</em>, and
+        <em>large language model evaluation</em>.
+      </p>
+      <div class="about__grid">
+        <p class="reveal-up">
+          I label computer-vision datasets, design multi-modal prompts across text,
+          audio and video, and assess model outputs for accuracy, helpfulness,
+          verbosity and persona alignment.
+        </p>
+        <p class="reveal-up">
+          A solid foundation in Python, C/C++, JSON and Linux meets meticulous
+          analytical judgment — focused on the training data and evaluation
+          pipelines that make frontier AI systems better.
+        </p>
+      </div>
+
+      <div class="stats">
+        <div class="stat reveal-up">
+          <span class="stat__num" data-count="2">0</span>
+          <span class="stat__label">Years in AI data ops</span>
+        </div>
+        <div class="stat reveal-up">
+          <span class="stat__num" data-count="3">0</span>
+          <span class="stat__label">Modalities — text · audio · video</span>
+        </div>
+        <div class="stat reveal-up">
+          <span class="stat__num" data-count="100">0</span><span class="stat__suffix">%</span>
+          <span class="stat__label">QA mindset, every dataset</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCE ============ -->
+    <section class="work" id="work">
+      <span class="section__index">02 — Experience</span>
+      <h2 class="section__title reveal-line">Where I've<br><span class="outline">shaped data</span></h2>
+
+      <div class="exp">
+        <article class="exp__item" data-cursor="hover">
+          <div class="exp__year">Nov 2025 — Present</div>
+          <div class="exp__body">
+            <h3>Analyst — AI / LLM Practice</h3>
+            <span class="exp__org">Innodata India Pvt. Ltd.</span>
+            <ul>
+              <li>Evaluate and rank LLM responses on helpfulness, accuracy, verbosity, listening comprehension and persona fit to raise model output quality.</li>
+              <li>Author and refine prompts across text, audio and video modalities for supervised fine-tuning and RLHF-style data pipelines.</li>
+              <li>Run quality assurance on annotated datasets, flagging labeling errors and inconsistencies to preserve dataset integrity.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="exp__item" data-cursor="hover">
+          <div class="exp__year">Aug 2024 — Nov 2025</div>
+          <div class="exp__body">
+            <h3>Associate Process Executive — Data Annotator</h3>
+            <span class="exp__org">Randstad India · deputed to NVIDIA Graphics Pvt. Ltd.</span>
+            <ul>
+              <li>Created and labeled high-precision annotations for computer-vision datasets using industry-standard annotation tools.</li>
+              <li>Performed multi-stage QA on annotated objects to ensure accuracy, consistency and guideline compliance.</li>
+              <li>Supported large-scale dataset preparation for model training — contributing to dataset diversity and scalability.</li>
+              <li>Collaborated cross-functionally to refine annotation guidelines and improve labeling throughput.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ SKILLS ============ -->
+    <section class="skills" id="skills">
+      <span class="section__index">03 — Capabilities</span>
+      <h2 class="section__title reveal-line">The<br><span class="outline">toolkit</span></h2>
+
+      <div class="skills__cols">
+        <div class="skills__col reveal-up">
+          <h4>Core</h4>
+          <ul>
+            <li>Data Annotation &amp; Labeling</li>
+            <li>LLM / AI Output Evaluation</li>
+            <li>Prompt Engineering (multi-modal)</li>
+            <li>Quality Assurance (QA)</li>
+            <li>Computer Vision fundamentals</li>
+          </ul>
+        </div>
+        <div class="skills__col reveal-up">
+          <h4>Technical</h4>
+          <ul>
+            <li>Python · C · C++</li>
+            <li>JSON &amp; Data Structures</li>
+            <li>Linux (Ubuntu · Kali)</li>
+            <li>Industry annotation platforms</li>
+          </ul>
+        </div>
+        <div class="skills__col reveal-up">
+          <h4>Methods</h4>
+          <ul>
+            <li>RLHF-style preference ranking</li>
+            <li>Audio / video QA workflows</li>
+            <li>Error &amp; consistency analysis</li>
+            <li>Dataset diversity &amp; scalability</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="edu">
+        <h4 class="reveal-up">Education &amp; Certification</h4>
+        <div class="edu__list">
+          <div class="edu__row reveal-up"><span>M.Sc. Information Technology</span><span>Bharathiar University · 70.75%</span><span>2020–22</span></div>
+          <div class="edu__row reveal-up"><span>B.Sc. Information Technology</span><span>R.T.M. Nagpur University · 66.59%</span><span>2017–20</span></div>
+          <div class="edu__row reveal-up"><span>Master's in Data Science &amp; AI</span><span>Intellipaat</span><span>2023–now</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="contact" id="contact">
+      <span class="section__index">04 — Contact</span>
+      <h2 class="contact__title">
+        <span class="line"><span class="word">LET'S BUILD</span></span>
+        <span class="line"><span class="word outline">BETTER AI.</span></span>
+      </h2>
+      <a href="mailto:safbhalerao@gmail.com" class="contact__mail" data-cursor="hover">safbhalerao@gmail.com</a>
+
+      <div class="contact__links">
+        <a href="https://datascienceportfol.io/safalb" target="_blank" rel="noopener" data-cursor="hover">Portfolio ↗</a>
+        <a href="https://safalb1.github.io/safal-site" target="_blank" rel="noopener" data-cursor="hover">GitHub Site ↗</a>
+        <a href="tel:+919130771065" data-cursor="hover">+91 91307 71065 ↗</a>
+      </div>
+
+      <footer class="footer">
+        <span>© <span id="year"></span> Safal S. Bhalerao</span>
+        <span>Bhandara, Maharashtra · India</span>
+        <span>Built in the neural cosmos ✳</span>
+      </footer>
+    </section>
+  </main>
+
+  <script type="module" src="js/scene.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
