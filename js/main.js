@@ -74,10 +74,33 @@
 
   // scroll progress bar
   const sp = document.getElementById("scrollProgress");
+  const floatCta = document.getElementById("floatCta");
+  let smokeTimer;
   window.addEventListener("scroll", () => {
     const max = document.body.scrollHeight - window.innerHeight;
     sp.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
-  });
+
+    // puff smoke while the page is actively scrolling
+    if (floatCta) {
+      floatCta.classList.add("is-scrolling");
+      clearTimeout(smokeTimer);
+      smokeTimer = setTimeout(() => floatCta.classList.remove("is-scrolling"), 450);
+    }
+  }, { passive: true });
+
+  // gentle up/down bob on the floating CTA, driven by scroll velocity
+  if (floatCta && !prefersReduced) {
+    let lastY = window.scrollY, bob = 0;
+    (function bobLoop() {
+      const y = window.scrollY;
+      const v = y - lastY;
+      lastY = y;
+      const target = Math.max(-9, Math.min(9, v * 0.45));
+      bob += (target - bob) * 0.12;
+      floatCta.style.setProperty("--bob", bob.toFixed(2) + "px");
+      requestAnimationFrame(bobLoop);
+    })();
+  }
 
   // ---------------------------------------------------------
   //  INTRO ANIMATION
@@ -156,16 +179,28 @@
       onLeaveBack: () => window.__setCosmosAmp && window.__setCosmosAmp(0.45),
     });
 
-    // nav hide on scroll down, show on up
-    let lastY = 0;
-    const nav = document.getElementById("nav");
-    ScrollTrigger.create({
-      start: 0, end: "max",
-      onUpdate: (self) => {
-        const y = self.scroll();
-        gsap.to(nav, { yPercent: y > lastY && y > 200 ? -130 : 0, duration: 0.5, ease: "power2.out" });
-        lastY = y;
+    // nav links get "sucked into" the S.B. brand as you scroll down,
+    // and slide back out near the top — scrubbed so it tracks scroll both ways
+    const brandEl = document.querySelector(".nav__brand");
+    gsap.to(".nav__links a", {
+      // travel left until each link's edge nearly touches the S.B. brand
+      x: (i, el) => {
+        if (!brandEl) return -150;
+        const b = brandEl.getBoundingClientRect();
+        const r = el.getBoundingClientRect();
+        return (b.right + 12) - r.left;
       },
+      scale: 0.5, opacity: 0,
+      transformOrigin: "left center",
+      ease: "power3.in",
+      stagger: { each: 0.06, from: "start" },
+      scrollTrigger: { start: 60, end: 380, scrub: 0.6, invalidateOnRefresh: true },
+    });
+
+    // S.B. swells subtly as it absorbs the links
+    gsap.fromTo(".nav__brand", { scale: 1 }, {
+      scale: 1.12, ease: "power2.out", transformOrigin: "left center",
+      scrollTrigger: { start: 60, end: 360, scrub: 0.6 },
     });
   } else {
     // fallback: just show everything

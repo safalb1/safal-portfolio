@@ -30,21 +30,7 @@
   <div class="preloader" id="preloader">
     <div class="preloader__inner">
       <div class="preloader__mark" aria-hidden="true">
-        <div class="endurance">
-          <span class="pod" style="--n:0"></span>
-          <span class="pod" style="--n:1"></span>
-          <span class="pod" style="--n:2"></span>
-          <span class="pod" style="--n:3"></span>
-          <span class="pod" style="--n:4"></span>
-          <span class="pod" style="--n:5"></span>
-          <span class="pod" style="--n:6"></span>
-          <span class="pod" style="--n:7"></span>
-          <span class="pod" style="--n:8"></span>
-          <span class="pod" style="--n:9"></span>
-          <span class="pod" style="--n:10"></span>
-          <span class="pod" style="--n:11"></span>
-          <span class="endurance__hub"></span>
-        </div>
+        <canvas class="blackhole-canvas" id="bhCanvas"></canvas>
       </div>
       <div class="preloader__count"><span id="loadNum">0</span><span class="preloader__pct">%</span></div>
       <div class="preloader__label">Initializing neural cosmos</div>
@@ -65,15 +51,22 @@
   <!-- ============ NAV ============ -->
   <header class="nav" id="nav">
     <a href="#hero" class="nav__brand" data-cursor="hover">
-      <span class="nav__mark">✳</span> S.B.
+      <span class="nav__mark" aria-hidden="true"></span> S.B.
     </a>
-    <nav class="nav__links">
-      <a href="#about" data-cursor="hover">About</a>
-      <a href="#work" data-cursor="hover">Experience</a>
-      <a href="#skills" data-cursor="hover">Skills</a>
-      <a href="#contact" data-cursor="hover">Contact</a>
-    </nav>
-    <a href="mailto:safbhalerao@gmail.com" class="nav__cta" data-cursor="hover">Let's talk</a>
+    <div class="nav__right">
+      <nav class="nav__links">
+        <a href="#about" data-cursor="hover">About</a>
+        <a href="#work" data-cursor="hover">Experience</a>
+        <a href="#skills" data-cursor="hover">Skills</a>
+        <a href="#contact" data-cursor="hover">Contact</a>
+      </nav>
+      <a href="mailto:safbhalerao@gmail.com" class="float-cta" id="floatCta" data-cursor="hover">
+        <span class="float-cta__smoke" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </span>
+        <span class="float-cta__txt">Let's talk</span>
+      </a>
+    </div>
   </header>
 
   <!-- ============ SCROLL PROGRESS ============ -->
@@ -253,6 +246,7 @@
     </section>
   </main>
 
+  <script src="js/blackhole.js"></script>
   <script type="module" src="js/scene.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
