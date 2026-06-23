@@ -162,7 +162,7 @@
     });
 
     // theme switch per section
-    ["hero", "about", "work", "skills", "contact"].forEach((id) => {
+    ["hero", "about", "work", "projects", "skills", "contact"].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
       ScrollTrigger.create({

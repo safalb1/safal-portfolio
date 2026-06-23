@@ -191,9 +191,10 @@ window.addEventListener("scroll", () => {
 // section -> color theme (called from main.js)
 const themes = {
   hero:    [palette.cyan, palette.coral],
-  about:   [palette.cyan, palette.teal],
-  work:    [palette.violet, palette.coral],
-  skills:  [palette.teal, palette.cyan],
+  about:    [palette.cyan, palette.teal],
+  work:     [palette.violet, palette.coral],
+  projects: [palette.teal, palette.violet],
+  skills:   [palette.teal, palette.cyan],
   contact: [palette.coral, palette.violet],
 };
 window.__setCosmosTheme = (name) => {
