@@ -57,6 +57,7 @@
       <nav class="nav__links">
         <a href="#about" data-cursor="hover">About</a>
         <a href="#work" data-cursor="hover">Experience</a>
+        <a href="#projects" data-cursor="hover">Work</a>
         <a href="#skills" data-cursor="hover">Skills</a>
         <a href="#contact" data-cursor="hover">Contact</a>
       </nav>
@@ -177,9 +178,82 @@
       </div>
     </section>
 
+    <!-- ============ SELECTED WORK ============ -->
+    <section class="projects" id="projects">
+      <span class="section__index">03 — Selected Work</span>
+      <h2 class="section__title reveal-line">Things I've<br><span class="outline">built &amp; broken</span></h2>
+
+      <div class="bento">
+        <article class="bento__card bento__card--feature reveal-up" data-cursor="hover">
+          <div class="bento__top">
+            <span class="bento__id">P01</span>
+            <span class="bento__ctx">Innodata · AI / LLM Practice</span>
+          </div>
+          <h3 class="bento__title">LLM Response Evaluation &amp; Ranking</h3>
+          <p class="bento__desc">
+            A repeatable rubric for scoring and ranking model outputs across helpfulness,
+            accuracy, verbosity, listening comprehension and persona fit — feeding
+            supervised fine-tuning and RLHF-style preference pipelines.
+          </p>
+          <div class="bento__metric">
+            <span class="bento__metric-num">5</span>
+            <span class="bento__metric-label">quality axes scored<br>per response</span>
+          </div>
+          <ul class="bento__tech">
+            <li>RLHF</li><li>Preference Ranking</li><li>LLM Eval</li>
+          </ul>
+        </article>
+
+        <article class="bento__card bento__card--wide reveal-up" data-cursor="hover">
+          <div class="bento__top">
+            <span class="bento__id">P02</span>
+            <span class="bento__ctx">Multi-modal</span>
+          </div>
+          <h3 class="bento__title">Multi-Modal Prompt Authoring</h3>
+          <p class="bento__desc">
+            Authored and refined prompts across text, audio and video to generate diverse,
+            high-signal samples for supervised fine-tuning.
+          </p>
+          <ul class="bento__tech">
+            <li>Text</li><li>Audio</li><li>Video</li>
+          </ul>
+        </article>
+
+        <article class="bento__card reveal-up" data-cursor="hover">
+          <div class="bento__top">
+            <span class="bento__id">P03</span>
+            <span class="bento__ctx">NVIDIA · via Randstad</span>
+          </div>
+          <h3 class="bento__title">CV Annotation at Scale</h3>
+          <p class="bento__desc">
+            High-precision labeling of computer-vision datasets with multi-stage QA,
+            supporting large-scale model-training data prep.
+          </p>
+          <ul class="bento__tech">
+            <li>Annotation</li><li>CV</li>
+          </ul>
+        </article>
+
+        <article class="bento__card reveal-up" data-cursor="hover">
+          <div class="bento__top">
+            <span class="bento__id">P04</span>
+            <span class="bento__ctx">Quality</span>
+          </div>
+          <h3 class="bento__title">Dataset QA &amp; Consistency</h3>
+          <p class="bento__desc">
+            Error and consistency analysis that flags labeling defects and guideline drift
+            to preserve dataset integrity.
+          </p>
+          <ul class="bento__tech">
+            <li>QA</li><li>Audits</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
     <!-- ============ SKILLS ============ -->
     <section class="skills" id="skills">
-      <span class="section__index">03 — Capabilities</span>
+      <span class="section__index">04 — Capabilities</span>
       <h2 class="section__title reveal-line">The<br><span class="outline">toolkit</span></h2>
 
       <div class="skills__cols">
@@ -225,7 +299,7 @@
 
     <!-- ============ CONTACT ============ -->
     <section class="contact" id="contact">
-      <span class="section__index">04 — Contact</span>
+      <span class="section__index">05 — Contact</span>
       <h2 class="contact__title">
         <span class="line"><span class="word">LET'S BUILD</span></span>
         <span class="line"><span class="word outline">BETTER AI.</span></span>
