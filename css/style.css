@@ -39,6 +39,31 @@ em { font-style: normal; color: var(--cyan-bright); }
 
 ::selection { background: var(--coral); color: #fff; }
 
+/* ============ ACCESSIBILITY ============ */
+/* skip link — hidden until focused via keyboard */
+.skip-link {
+  position: fixed;
+  top: -120px; left: 1rem;
+  z-index: 10001;
+  padding: .7rem 1.2rem;
+  background: var(--ink); color: var(--bg);
+  font-family: "Syne", sans-serif; font-weight: 700;
+  font-size: .8rem; letter-spacing: .08em;
+  border-radius: 8px;
+  transition: top .3s var(--ease);
+}
+.skip-link:focus { top: 1rem; outline: none; }
+
+/* visible keyboard focus (body uses cursor:none, so this is the only
+   affordance keyboard users get) */
+:focus-visible {
+  outline: 2px solid var(--cyan-bright);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* don't double up the ring on the gradient-border CTA pill */
+.float-cta:focus-visible { outline-offset: 4px; }
+
 /* ============ WEBGL CANVAS ============ */
 #webgl {
   position: fixed;

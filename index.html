@@ -5,10 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Safal Bhalerao — AI / LLM Analyst, Data Annotation & Quality Specialist. Building high-quality training data and model-evaluation pipelines for frontier AI." />
   <meta name="theme-color" content="#05070d" />
+  <meta name="author" content="Safal S. Bhalerao" />
+  <link rel="canonical" href="https://safalb1.github.io/safal-portfolio/" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
+
+  <!-- Open Graph -->
   <meta property="og:title" content="Safal Bhalerao — AI / LLM Analyst" />
   <meta property="og:description" content="Data annotation, LLM evaluation & quality engineering for frontier AI systems." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://safalb1.github.io/safal-portfolio/" />
+  <meta property="og:site_name" content="Safal Bhalerao" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Safal Bhalerao — AI / LLM Analyst" />
+  <meta name="twitter:description" content="Data annotation, LLM evaluation & quality engineering for frontier AI systems." />
+
   <title>Safal Bhalerao — AI / LLM Analyst</title>
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Safal S. Bhalerao",
+    "jobTitle": "AI / LLM Analyst — Data Annotation & Quality Specialist",
+    "description": "AI/ML data-operations professional specializing in data annotation, LLM evaluation and quality assurance for frontier AI systems.",
+    "email": "mailto:safbhalerao@gmail.com",
+    "telephone": "+91-91307-71065",
+    "url": "https://safalb1.github.io/safal-portfolio/",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bhandara",
+      "addressRegion": "Maharashtra",
+      "addressCountry": "IN"
+    },
+    "sameAs": [
+      "https://datascienceportfol.io/safalb",
+      "https://github.com/safalb1"
+    ],
+    "knowsAbout": [
+      "LLM Evaluation",
+      "Data Annotation",
+      "Prompt Engineering",
+      "RLHF",
+      "Computer Vision",
+      "Quality Assurance"
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,6 +74,9 @@
   </script>
 </head>
 <body>
+  <!-- ============ SKIP LINK ============ -->
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
   <!-- ============ PRELOADER ============ -->
   <div class="preloader" id="preloader">
     <div class="preloader__inner">
@@ -39,14 +90,14 @@
   </div>
 
   <!-- ============ CUSTOM CURSOR ============ -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
 
   <!-- ============ GRAIN / NOISE OVERLAY ============ -->
   <div class="grain" aria-hidden="true"></div>
 
   <!-- ============ 3D BACKGROUND CANVAS ============ -->
-  <canvas id="webgl"></canvas>
+  <canvas id="webgl" aria-hidden="true"></canvas>
 
   <!-- ============ NAV ============ -->
   <header class="nav" id="nav">
@@ -54,7 +105,7 @@
       <span class="nav__mark" aria-hidden="true"></span> S.B.
     </a>
     <div class="nav__right">
-      <nav class="nav__links">
+      <nav class="nav__links" aria-label="Primary">
         <a href="#about" data-cursor="hover">About</a>
         <a href="#work" data-cursor="hover">Experience</a>
         <a href="#skills" data-cursor="hover">Skills</a>
@@ -70,9 +121,9 @@
   </header>
 
   <!-- ============ SCROLL PROGRESS ============ -->
-  <div class="scrollbar"><span id="scrollProgress"></span></div>
+  <div class="scrollbar" aria-hidden="true"><span id="scrollProgress"></span></div>
 
-  <main>
+  <main id="main-content">
     <!-- ============ HERO ============ -->
     <section class="hero" id="hero">
       <div class="hero__eyebrow reveal-up">
@@ -98,7 +149,7 @@
     </section>
 
     <!-- ============ MARQUEE ============ -->
-    <div class="marquee" data-speed="1">
+    <div class="marquee" data-speed="1" aria-hidden="true">
       <div class="marquee__track">
         <span>LLM EVALUATION ✳ PROMPT ENGINEERING ✳ DATA ANNOTATION ✳ QUALITY ASSURANCE ✳ RLHF ✳ COMPUTER VISION ✳&nbsp;</span>
         <span>LLM EVALUATION ✳ PROMPT ENGINEERING ✳ DATA ANNOTATION ✳ QUALITY ASSURANCE ✳ RLHF ✳ COMPUTER VISION ✳&nbsp;</span>
