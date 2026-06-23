@@ -8,6 +8,7 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 
 const canvas = document.querySelector("#webgl");
 const sizes = { w: window.innerWidth, h: window.innerHeight };
+const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x05070d, 0.055);
@@ -33,7 +34,9 @@ const target = { colorA: palette.cyan.clone(), colorB: palette.coral.clone() };
 // ---------------------------------------------------------
 //  NEURAL CORE — points on a fibonacci sphere, displaced
 // ---------------------------------------------------------
-const COUNT = 9000;
+// scale particle density to the device — fewer points on phones/tablets
+// keeps the GPU/battery cost down without changing the look much
+const COUNT = sizes.w < 640 ? 4000 : sizes.w < 1024 ? 6500 : 9000;
 const radius = 3.2;
 const positions = new Float32Array(COUNT * 3);
 const base = new Float32Array(COUNT * 3);
@@ -144,7 +147,7 @@ scene.add(core);
 // ---------------------------------------------------------
 //  STARFIELD
 // ---------------------------------------------------------
-const starCount = 1400;
+const starCount = sizes.w < 640 ? 700 : 1400;
 const starPos = new Float32Array(starCount * 3);
 for (let i = 0; i < starCount; i++) {
   starPos[i * 3] = (Math.random() - 0.5) * 60;
@@ -186,7 +189,7 @@ let scrollFactor = 0; // 0..1 of page
 window.addEventListener("scroll", () => {
   const max = document.body.scrollHeight - window.innerHeight;
   scrollFactor = max > 0 ? window.scrollY / max : 0;
-});
+}, { passive: true });
 
 // section -> color theme (called from main.js)
 const themes = {
@@ -220,8 +223,17 @@ window.addEventListener("resize", () => {
 //  LOOP
 // ---------------------------------------------------------
 const clock = new THREE.Clock();
+let elapsed = 0;
+let rafId = null;
+let running = false;
+
 function tick() {
-  const t = clock.getElapsedTime();
+  // clamp per-frame delta so a long pause (hidden tab) or a hitch
+  // doesn't cause a big jump in animation phase
+  let dt = clock.getDelta();
+  if (dt > 0.1) dt = 0.016;
+  elapsed += dt;
+  const t = elapsed;
   material.uniforms.uTime.value = t;
 
   // smooth color lerp
@@ -244,9 +256,32 @@ function tick() {
   camera.lookAt(core.position);
 
   composer.render();
-  requestAnimationFrame(tick);
+  if (running) rafId = requestAnimationFrame(tick);
 }
-tick();
+
+function start() {
+  if (running) return;
+  running = true;
+  clock.getDelta(); // reset delta baseline so the next frame doesn't jump
+  rafId = requestAnimationFrame(tick);
+}
+function stop() {
+  running = false;
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = null;
+}
+
+if (REDUCED_MOTION) {
+  // honour reduced-motion: paint a single static frame, no animation loop
+  composer.render();
+} else {
+  start();
+  // pause rendering while the tab is hidden — no point burning GPU/battery
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stop();
+    else start();
+  });
+}
 
 // let the preloader know WebGL is ready
 window.dispatchEvent(new Event("cosmos-ready"));
