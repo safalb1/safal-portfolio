@@ -59,6 +59,7 @@
   let lenis;
   if (window.Lenis && !prefersReduced) {
     lenis = new Lenis({ duration: 1.15, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+    window.__lenis = lenis;
     lenis.on("scroll", () => { if (window.ScrollTrigger) ScrollTrigger.update(); });
     function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
     requestAnimationFrame(raf);
@@ -162,7 +163,7 @@
     });
 
     // theme switch per section
-    ["hero", "about", "work", "projects", "skills", "contact"].forEach((id) => {
+    ["hero", "about", "work", "field", "projects", "skills", "contact"].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
       ScrollTrigger.create({
