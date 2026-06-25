@@ -21,8 +21,12 @@
       const row = document.createElement("div"); row.className = "marquee__row";
       const track = document.createElement("div"); track.className = "marquee__track";
       track.dataset.dir = r % 2 === 0 ? "1" : "-1";
-      const a = document.createElement("span"); a.textContent = text;
-      const b = document.createElement("span"); b.textContent = text;
+      // one phrase per line highlighted (orange + slightly bigger), chosen at random
+      const hot = Math.floor(Math.random() * rot.length);
+      const sep = " ✳ ";
+      const html = rot.map((p, i) => (i === hot ? '<span class="mq-hot">' + p + "</span>" : p)).join(sep) + sep;
+      const a = document.createElement("span"); a.innerHTML = html;
+      const b = document.createElement("span"); b.innerHTML = html;
       track.append(a, b); row.appendChild(track); rows.appendChild(row);
     }
   })();

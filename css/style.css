@@ -331,17 +331,19 @@ section { padding: clamp(5rem, 12vh, 11rem) clamp(1.2rem, 6vw, 7rem); position: 
 @media (max-width: 720px) { .hero__meta { display: none; } }
 
 /* ============ MARQUEE (multi-line, alternating directions) ============ */
-.marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: .7rem 0; }
-.marquee__rows { display: flex; flex-direction: column; gap: .05rem; }
+.marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: .45rem 0; }
+.marquee__rows { display: flex; flex-direction: column; gap: .03rem; }
 .marquee__row { overflow: hidden; }
 .marquee__track { display: flex; white-space: nowrap; will-change: transform; }
 .marquee__track span {
   font-family: "Syne", sans-serif; font-weight: 700; line-height: 1.18;
-  font-size: clamp(.62rem, 1.15vw, .92rem); letter-spacing: .02em; color: var(--ink);
+  font-size: clamp(.43rem, .8vw, .64rem); letter-spacing: .02em; color: var(--ink);
   padding-right: 1rem;
 }
-/* alternate rows dimmed for depth */
-.marquee__row:nth-child(even) .marquee__track span { color: var(--ink-dim); }
+/* one highlighted phrase per line — orange and slightly larger */
+.marquee__track span .mq-hot {
+  color: var(--coral); font-size: 1.18em; padding-right: 0;
+}
 
 /* ============ ABOUT ============ */
 .about__lead {
