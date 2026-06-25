@@ -6,6 +6,28 @@
   document.getElementById("year").textContent = new Date().getFullYear();
 
   // ---------------------------------------------------------
+  //  MARQUEE — build N small lines, each scrolling opposite to the one above
+  // ---------------------------------------------------------
+  (function buildMarquee() {
+    const rows = document.getElementById("marqueeRows");
+    if (!rows) return;
+    const phrases = ["LLM EVALUATION", "PROMPT ENGINEERING", "DATA ANNOTATION",
+                     "QUALITY ASSURANCE", "RLHF", "COMPUTER VISION"];
+    const LINES = 9;
+    for (let r = 0; r < LINES; r++) {
+      const k = r % phrases.length;
+      const rot = phrases.slice(k).concat(phrases.slice(0, k));
+      const text = rot.join(" ✳ ") + " ✳ ";
+      const row = document.createElement("div"); row.className = "marquee__row";
+      const track = document.createElement("div"); track.className = "marquee__track";
+      track.dataset.dir = r % 2 === 0 ? "1" : "-1";
+      const a = document.createElement("span"); a.textContent = text;
+      const b = document.createElement("span"); b.textContent = text;
+      track.append(a, b); row.appendChild(track); rows.appendChild(row);
+    }
+  })();
+
+  // ---------------------------------------------------------
   //  PRELOADER
   // ---------------------------------------------------------
   const preloader = document.getElementById("preloader");
@@ -144,11 +166,12 @@
       });
     });
 
-    // marquee scroll-velocity skew
-    gsap.utils.toArray(".marquee__track").forEach((track) => {
-      gsap.to(track, {
-        xPercent: -50, repeat: -1, duration: 22, ease: "none",
-      });
+    // marquee — each line scrolls opposite to its neighbour
+    gsap.utils.toArray(".marquee__track").forEach((track, idx) => {
+      const dir = +track.dataset.dir || 1;     // 1 = leftward, -1 = rightward
+      const dur = 26 + (idx % 4) * 4;          // vary speed a little per line
+      if (dir > 0) gsap.to(track, { xPercent: -50, repeat: -1, duration: dur, ease: "none" });
+      else gsap.fromTo(track, { xPercent: -50 }, { xPercent: 0, repeat: -1, duration: dur, ease: "none" });
     });
 
     // stat counters
