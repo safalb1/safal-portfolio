@@ -331,12 +331,12 @@ section { padding: clamp(5rem, 12vh, 11rem) clamp(1.2rem, 6vw, 7rem); position: 
 @media (max-width: 720px) { .hero__meta { display: none; } }
 
 /* ============ MARQUEE (multi-line, alternating directions) ============ */
-.marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: .45rem 0; }
-.marquee__rows { display: flex; flex-direction: column; gap: .03rem; }
+.marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: .2rem 0; }
+.marquee__rows { display: flex; flex-direction: column; gap: 0; }
 .marquee__row { overflow: hidden; }
 .marquee__track { display: flex; white-space: nowrap; will-change: transform; }
 .marquee__track span {
-  font-family: "Syne", sans-serif; font-weight: 700; line-height: 1.18;
+  font-family: "Syne", sans-serif; font-weight: 700; line-height: .9;
   font-size: clamp(.43rem, .8vw, .64rem); letter-spacing: .02em; color: var(--ink);
   padding-right: 1rem;
 }
