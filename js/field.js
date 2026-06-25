@@ -1,6 +1,7 @@
 // ============================================================
-//  FIELD WORK — dynamic paginated galleries, domain toggle & lightbox
-//  Data comes from js/field-data.js (window.FIELD_SHOTS)
+//  FIELD WORK — master/detail: categories left, wrinkled-paper cards right.
+//  Hovering a card un-crumples it into a clean sheet; switching a category
+//  plays a 3D paper-unfold. Data from js/field-data.js (window.FIELD_SHOTS).
 // ============================================================
 (function () {
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -9,10 +10,16 @@
 
   const SHOTS = window.FIELD_SHOTS;
   const BASE = "assets/work/";
-  const PAGE = 6; // tiles per page
   const gsapOK = window.gsap && !prefersReduced;
+  const nav = section.querySelector(".field__nav");
+  const stage = section.querySelector(".field__stage");
+  if (!nav || !stage) return;
 
-  // ---- category metadata (titles / blurbs / order, per domain) ----
+  // ---- domains + category metadata ----
+  const DOMAINS = [
+    { key: "ai", label: "AI / LLM Training" },
+    { key: "cv", label: "Data Annotation" },
+  ];
   const CATS = {
     ai: [
       { id: "voice",       no: "A1", title: "Voice & Audio Evaluation",
@@ -34,8 +41,6 @@
         pdf: BASE + "data-annotation-casestudy.pdf" },
     ],
   };
-
-  // hand-written captions for the annotation slides; everything else is auto
   const CAP = {
     "cv-2d.jpg": "2D annotation — vehicle bounding boxes & brake-signal states",
     "cv-text.jpg": "Text annotation — in-scene text labeling",
@@ -53,170 +58,134 @@
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
-  // make the custom cursor swell over dynamically-created elements
   const cursorEl = document.getElementById("cursor");
   function bindCursor(root) {
     if (!cursorEl) return;
-    root.querySelectorAll("[data-cursor='hover']").forEach((el) => {
-      el.addEventListener("mouseenter", () => cursorEl.classList.add("is-hover"));
-      el.addEventListener("mouseleave", () => cursorEl.classList.remove("is-hover"));
+    root.querySelectorAll("[data-cursor='hover']").forEach((el2) => {
+      el2.addEventListener("mouseenter", () => cursorEl.classList.add("is-hover"));
+      el2.addEventListener("mouseleave", () => cursorEl.classList.remove("is-hover"));
     });
   }
-
   const el = (tag, cls, html) => {
     const n = document.createElement(tag);
     if (cls) n.className = cls;
     if (html != null) n.innerHTML = html;
     return n;
   };
+  const rand = (a, b) => a + Math.random() * (b - a);
 
   // ---------------------------------------------------------
-  //  RENDER ONE CATEGORY (with page-by-page pagination)
+  //  LEFT NAV
   // ---------------------------------------------------------
-  function renderCat(meta) {
+  let current = null;
+  const allItems = [];
+  DOMAINS.forEach((d) => {
+    const group = el("div", "nav-group");
+    group.appendChild(el("div", "nav-group__label", d.label));
+    const list = el("div", "field__navlist");
+    CATS[d.key].forEach((meta) => {
+      const n = (SHOTS[meta.id] || []).length;
+      const b = el("button", "field__navitem",
+        `<span class="ix">${meta.no}</span><span class="nm">${meta.title}</span><span class="ct">${n}</span>`);
+      b.setAttribute("data-cursor", "hover");
+      b._meta = meta;
+      b.addEventListener("click", () => select(meta, b));
+      list.appendChild(b);
+      allItems.push(b);
+    });
+    group.appendChild(list);
+    nav.appendChild(group);
+  });
+  bindCursor(nav);
+
+  function setActiveNav(btn) {
+    allItems.forEach((b) => b.classList.toggle("is-on", b === btn));
+  }
+
+  // ---------------------------------------------------------
+  //  RIGHT STAGE
+  // ---------------------------------------------------------
+  function renderStage(meta) {
     const files = SHOTS[meta.id] || [];
-    const pages = Math.max(1, Math.ceil(files.length / PAGE));
-    let page = 0;
+    stage.innerHTML = "";
 
-    const art = el("article", "cat");
-    art.appendChild(el("header", "cat__head",
-      `<span class="cat__no">${meta.no}</span>
+    const head = el("div", "stage__head",
+      `<span class="stage__no">${meta.no}</span>
        <h3>${meta.title}</h3>
        <p>${meta.desc}</p>
-       <span class="cat__count">${files.length} ${files.length === 1 ? "capture" : "captures"}</span>`));
+       <span class="stage__count">${files.length} ${files.length === 1 ? "capture" : "captures"}</span>`);
+    stage.appendChild(head);
 
-    const grid = el("div", "cat__grid");
-    art.appendChild(grid);
+    const grid = el("div", "stage__grid");
+    files.forEach((file, idx) => {
+      const cap = caption(file);
+      const card = el("button", "paper",
+        `<span class="paper__sheet">
+           <img src="${BASE}${file}" alt="${cap.replace(/"/g, "&quot;")}" loading="lazy" />
+           <span class="paper__tape" aria-hidden="true"></span>
+           <span class="paper__tag">${cap}</span>
+           <span class="paper__exp" aria-hidden="true">↗</span>
+         </span>`);
+      card.style.setProperty("--rot", rand(-3.2, 3.2).toFixed(2) + "deg");
+      card.setAttribute("data-cursor", "hover");
+      card.addEventListener("click", () => openLightbox(files, idx, meta));
+      grid.appendChild(card);
+    });
+    stage.appendChild(grid);
 
     if (meta.pdf) {
       const a = el("a", "field__pdf",
         `View full annotation case study <span aria-hidden="true">↗ PDF</span>`);
       a.href = meta.pdf; a.target = "_blank"; a.rel = "noopener";
       a.setAttribute("data-cursor", "hover");
-      art.appendChild(a);
+      stage.appendChild(a);
     }
+    bindCursor(stage);
+  }
 
-    // pager (only if more than one page)
-    const pager = el("div", "cat__pager");
-    if (pages > 1) art.appendChild(pager);
+  function animateIn() {
+    if (!gsapOK) return;
+    const head = stage.querySelector(".stage__head");
+    const papers = stage.querySelectorAll(".paper");
+    const pdf = stage.querySelector(".field__pdf");
+    if (head) gsap.fromTo(head.children,
+      { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out", stagger: 0.05, overwrite: true });
+    gsap.fromTo(papers,
+      { opacity: 0, y: 36, scale: 0.55, rotationZ: () => rand(-14, 14), rotationX: -55,
+        transformOrigin: "50% 100%", filter: "blur(7px) brightness(0.35)" },
+      { opacity: 1, y: 0, scale: 1, rotationZ: 0, rotationX: 0, filter: "blur(0px) brightness(1)",
+        duration: 0.85, ease: "back.out(1.35)", stagger: { each: 0.045, from: "start" }, overwrite: true,
+        clearProps: "transform,filter" });
+    if (pdf) gsap.fromTo(pdf, { opacity: 0 }, { opacity: 1, duration: 0.6, delay: 0.3 });
+  }
 
-    function drawGrid(animate) {
-      grid.innerHTML = "";
-      const start = page * PAGE;
-      files.slice(start, start + PAGE).forEach((file, i) => {
-        const idx = start + i;
-        const cap = caption(file);
-        const btn = el("button", "shot",
-          `<img src="${BASE}${file}" alt="${cap.replace(/"/g, "&quot;")}" loading="lazy" />
-           <span class="shot__tag">${cap}</span><span class="shot__exp" aria-hidden="true">↗</span>`);
-        btn.setAttribute("data-cursor", "hover");
-        btn.addEventListener("click", () => openLightbox(files, idx, meta));
-        grid.appendChild(btn);
+  function select(meta, btn) {
+    if (current === meta) return;
+    setActiveNav(btn);
+    const grid = stage.querySelector(".stage__grid");
+    const papers = grid ? [...grid.querySelectorAll(".paper")] : [];
+    const swap = () => { renderStage(meta); animateIn(); current = meta;
+      if (window.ScrollTrigger) ScrollTrigger.refresh(); };
+    if (gsapOK && papers.length) {
+      gsap.to(papers, {
+        opacity: 0, scale: 0.6, y: 16, rotationZ: () => rand(-12, 12), rotationX: -40,
+        transformOrigin: "50% 100%", filter: "blur(6px) brightness(0.5)",
+        duration: 0.3, ease: "power2.in", stagger: { each: 0.02, from: "end" }, onComplete: swap,
       });
-      bindCursor(grid);
-      if (gsapOK && animate) {
-        gsap.fromTo(grid.children, { opacity: 0, y: 24 },
-          { opacity: 1, y: 0, duration: 0.55, ease: "expo.out", stagger: 0.05, overwrite: true });
-      }
-    }
-
-    function drawPager() {
-      if (pages <= 1) return;
-      pager.innerHTML = "";
-      const prev = el("button", "pager__arrow", "‹");
-      const next = el("button", "pager__arrow", "›");
-      prev.setAttribute("aria-label", "Previous page");
-      next.setAttribute("aria-label", "Next page");
-      prev.setAttribute("data-cursor", "hover");
-      next.setAttribute("data-cursor", "hover");
-      const go = (p) => { page = (p + pages) % pages; drawGrid(true); drawPager(); };
-      prev.addEventListener("click", () => go(page - 1));
-      next.addEventListener("click", () => go(page + 1));
-
-      const dots = el("div", "pager__dots");
-      for (let i = 0; i < pages; i++) {
-        const d = el("button", "pager__dot" + (i === page ? " is-on" : ""));
-        d.setAttribute("aria-label", "Page " + (i + 1));
-        d.setAttribute("data-cursor", "hover");
-        d.addEventListener("click", () => go(i));
-        dots.appendChild(d);
-      }
-      const label = el("span", "pager__count", `${page + 1} / ${pages}`);
-      pager.appendChild(prev);
-      pager.appendChild(dots);
-      pager.appendChild(label);
-      pager.appendChild(next);
-      bindCursor(pager);
-    }
-
-    drawGrid(false);
-    drawPager();
-    return art;
+    } else swap();
   }
 
-  // ---------------------------------------------------------
-  //  BUILD PANELS
-  // ---------------------------------------------------------
-  const panels = {};
-  ["ai", "cv"].forEach((dom) => {
-    const panel = section.querySelector(`.field__panel[data-panel="${dom}"]`);
-    panels[dom] = panel;
-    if (!panel) return;
-    CATS[dom].forEach((meta) => panel.appendChild(renderCat(meta)));
-  });
-
-  // ---------------------------------------------------------
-  //  DOMAIN TOGGLE (sliding pill + crossfade)
-  // ---------------------------------------------------------
-  const tabs = [...section.querySelectorAll(".field__tab")];
-  const thumb = section.querySelector(".field__thumb");
-  const activeTab = () => tabs.find((t) => t.classList.contains("is-active")) || tabs[0];
-
-  function placeThumb(tab) {
-    if (!thumb || !tab) return;
-    thumb.style.left = tab.offsetLeft + "px";
-    thumb.style.width = tab.offsetWidth + "px";
-  }
-
-  function activate(dom) {
-    tabs.forEach((t) => {
-      const on = t.dataset.domain === dom;
-      t.classList.toggle("is-active", on);
-      t.setAttribute("aria-selected", on ? "true" : "false");
-    });
-    placeThumb(activeTab());
-    Object.entries(panels).forEach(([k, p]) => {
-      if (!p) return;
-      const on = k === dom;
-      p.classList.toggle("is-active", on);
-      if (on) {
-        p.classList.remove("is-anim"); void p.offsetWidth; p.classList.add("is-anim");
-        if (gsapOK) gsap.fromTo(p.querySelectorAll(".cat__head, .shot"),
-          { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.05, overwrite: true });
-      }
-    });
-    if (window.ScrollTrigger) ScrollTrigger.refresh();
-  }
-
-  tabs.forEach((t) => t.addEventListener("click", () => activate(t.dataset.domain)));
-  window.addEventListener("load", () => placeThumb(activeTab()));
-  window.addEventListener("resize", () => placeThumb(activeTab()));
-  placeThumb(activeTab());
-
-  // first-load reveal for the visible panel
+  // initial: first category, rendered at rest; unfold once when scrolled into view
+  const firstBtn = allItems[0];
+  setActiveNav(firstBtn);
+  renderStage(firstBtn._meta);
+  current = firstBtn._meta;
   if (gsapOK && window.ScrollTrigger) {
-    const initial = section.querySelector(".field__panel.is-active");
-    initial && initial.querySelectorAll(".cat").forEach((cat) => {
-      gsap.set(cat.querySelectorAll(".cat__head, .shot"), { opacity: 0, y: 30 });
-      gsap.to(cat.querySelectorAll(".cat__head, .shot"), {
-        opacity: 1, y: 0, duration: 0.9, ease: "expo.out", stagger: 0.06,
-        scrollTrigger: { trigger: cat, start: "top 86%" },
-      });
-    });
+    ScrollTrigger.create({ trigger: stage, start: "top 82%", once: true, onEnter: animateIn });
   }
 
   // ---------------------------------------------------------
-  //  LIGHTBOX  (pages through an entire category)
+  //  LIGHTBOX (pages through the whole category)
   // ---------------------------------------------------------
   const lb = document.getElementById("lightbox");
   const lbImg = document.getElementById("lbImg");
@@ -224,9 +193,7 @@
   const lbClose = document.getElementById("lbClose");
   const lbPrev = document.getElementById("lbPrev");
   const lbNext = document.getElementById("lbNext");
-  let lbFiles = [];
-  let lbIdx = 0;
-  let lbMeta = null;
+  let lbFiles = [], lbIdx = 0, lbMeta = null;
 
   function show(i) {
     lbIdx = (i + lbFiles.length) % lbFiles.length;

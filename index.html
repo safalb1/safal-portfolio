@@ -249,20 +249,12 @@
         and evaluates frontier models.
       </p>
 
-      <!-- domain toggle -->
-      <div class="field__switch reveal-up" role="tablist" aria-label="Work domain">
-        <button class="field__tab is-active" data-domain="ai" role="tab" aria-selected="true" data-cursor="hover">
-          AI / LLM Training <span>Multimodal · AI Trainer</span>
-        </button>
-        <button class="field__tab" data-domain="cv" role="tab" aria-selected="false" data-cursor="hover">
-          Data Annotation <span>Computer Vision</span>
-        </button>
-        <span class="field__thumb" aria-hidden="true"></span>
+      <!-- master / detail — categories left, wrinkled-paper cards right.
+           Both columns are rendered by js/field.js from js/field-data.js -->
+      <div class="field__layout">
+        <nav class="field__nav reveal-up" aria-label="Skill categories"></nav>
+        <div class="field__stage" aria-live="polite"></div>
       </div>
-
-      <!-- panels rendered by js/field.js from js/field-data.js -->
-      <div class="field__panel is-active" data-panel="ai"></div>
-      <div class="field__panel" data-panel="cv"></div>
     </section>
 
     <!-- ============ SELECTED WORK ============ -->
