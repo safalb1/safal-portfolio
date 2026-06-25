@@ -6,6 +6,34 @@
   document.getElementById("year").textContent = new Date().getFullYear();
 
   // ---------------------------------------------------------
+  //  MARQUEE — one phrase at a time, sweeping left → right
+  // ---------------------------------------------------------
+  (function marqueeRotator() {
+    const phraseEl = document.querySelector(".marquee__phrase");
+    if (!phraseEl) return;
+    const phrases = [
+      "LLM EVALUATION", "PROMPT ENGINEERING", "DATA ANNOTATION",
+      "QUALITY ASSURANCE", "RLHF", "COMPUTER VISION",
+    ];
+    let i = 0;
+    phraseEl.textContent = phrases[0];
+
+    if (prefersReduced || !window.gsap) {
+      setInterval(() => { i = (i + 1) % phrases.length; phraseEl.textContent = phrases[i]; }, 1600);
+      return;
+    }
+    const cycle = () => {
+      const tl = gsap.timeline({ onComplete: cycle, delay: 0.55 });
+      tl.to(phraseEl, { xPercent: 75, autoAlpha: 0, duration: 0.3, ease: "power2.in" })
+        .add(() => { i = (i + 1) % phrases.length; phraseEl.textContent = phrases[i]; })
+        .fromTo(phraseEl,
+          { xPercent: -75, autoAlpha: 0 },
+          { xPercent: 0, autoAlpha: 1, duration: 0.45, ease: "power3.out" });
+    };
+    gsap.delayedCall(0.9, cycle);
+  })();
+
+  // ---------------------------------------------------------
   //  PRELOADER
   // ---------------------------------------------------------
   const preloader = document.getElementById("preloader");
@@ -155,12 +183,6 @@
       });
     });
 
-    // marquee scroll-velocity skew
-    gsap.utils.toArray(".marquee__track").forEach((track) => {
-      gsap.to(track, {
-        xPercent: -50, repeat: -1, duration: 22, ease: "none",
-      });
-    });
 
     // theme switch per section
     ["hero", "about", "work", "field", "projects", "skills", "contact"].forEach((id) => {

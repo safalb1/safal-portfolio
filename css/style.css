@@ -330,13 +330,20 @@ section { padding: clamp(5rem, 12vh, 11rem) clamp(1.2rem, 6vw, 7rem); position: 
 }
 @media (max-width: 720px) { .hero__meta { display: none; } }
 
-/* ============ MARQUEE ============ */
+/* ============ MARQUEE (single-phrase rotator) ============ */
 .marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 1.4rem 0; }
-.marquee__track { display: flex; white-space: nowrap; will-change: transform; }
-.marquee__track span {
+.marquee__rotator {
+  display: flex; align-items: center; justify-content: center; gap: clamp(1rem, 3vw, 2.2rem);
+}
+.marquee__star {
+  font-family: "Syne", sans-serif; color: var(--coral); opacity: .75;
+  font-size: clamp(1.1rem, 2.6vw, 2.2rem); flex: none;
+}
+.marquee__phrase {
   font-family: "Syne", sans-serif; font-weight: 700;
-  font-size: clamp(1.4rem, 4vw, 3rem); letter-spacing: .02em; color: var(--ink);
-  padding-right: 1rem;
+  font-size: clamp(1.4rem, 4vw, 3rem); letter-spacing: .03em; color: var(--ink);
+  white-space: nowrap; will-change: transform, opacity;
+  min-width: 9ch; text-align: center;
 }
 
 /* ============ ABOUT ============ */
