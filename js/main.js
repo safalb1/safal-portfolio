@@ -27,8 +27,28 @@
       const html = rot.map((p, i) => (i === hot ? '<span class="mq-hot">' + p + "</span>" : p)).join(sep) + sep;
       const a = document.createElement("span"); a.innerHTML = html;
       const b = document.createElement("span"); b.innerHTML = html;
+      track.dataset.base = html;
       track.append(a, b); row.appendChild(track); rows.appendChild(row);
     }
+
+    // repeat each line's text until one copy overflows the band, so the two
+    // copies always tile with no blank gap as it loops (xPercent:-50)
+    function fillTracks() {
+      const cw = rows.clientWidth || window.innerWidth || 1200;
+      rows.querySelectorAll(".marquee__track").forEach((track) => {
+        const base = track.dataset.base;
+        track.children[0].innerHTML = base;
+        const w1 = track.children[0].getBoundingClientRect().width;
+        const reps = w1 > 0 ? Math.max(2, Math.ceil(cw / w1) + 1) : 6;
+        const filled = base.repeat(reps);
+        track.children[0].innerHTML = filled;
+        track.children[1].innerHTML = filled;
+      });
+    }
+    fillTracks();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fillTracks);
+    window.addEventListener("load", fillTracks);
+    let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(fillTracks, 200); });
   })();
 
   // ---------------------------------------------------------
