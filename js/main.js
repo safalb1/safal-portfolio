@@ -13,6 +13,8 @@
     if (!rows) return;
     const phrases = ["LLM EVALUATION", "PROMPT ENGINEERING", "DATA ANNOTATION",
                      "QUALITY ASSURANCE", "RLHF", "COMPUTER VISION"];
+    // fixed highlight per line (cycles down the list); edit to re-assign which word pops
+    const HOT = ["PROMPT ENGINEERING", "LLM EVALUATION", "RLHF", "DATA ANNOTATION", "COMPUTER VISION", "QUALITY ASSURANCE"];
     const LINES = 9;
     for (let r = 0; r < LINES; r++) {
       const k = r % phrases.length;
@@ -21,10 +23,10 @@
       const row = document.createElement("div"); row.className = "marquee__row";
       const track = document.createElement("div"); track.className = "marquee__track";
       track.dataset.dir = r % 2 === 0 ? "1" : "-1";
-      // one phrase per line highlighted (orange + slightly bigger), chosen at random
-      const hot = Math.floor(Math.random() * rot.length);
+      // one fixed phrase per line highlighted (orange + slightly bigger)
+      const hotPhrase = HOT[r % HOT.length];
       const sep = " ✳ ";
-      const html = rot.map((p, i) => (i === hot ? '<span class="mq-hot">' + p + "</span>" : p)).join(sep) + sep;
+      const html = rot.map((p) => (p === hotPhrase ? '<span class="mq-hot">' + p + "</span>" : p)).join(sep) + sep;
       const a = document.createElement("span"); a.innerHTML = html;
       const b = document.createElement("span"); b.innerHTML = html;
       track.dataset.base = html;
