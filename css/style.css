@@ -523,7 +523,7 @@ section { padding: clamp(5rem, 12vh, 11rem) clamp(1.2rem, 6vw, 7rem); position: 
   font-size: .76rem; letter-spacing: .08em; color: var(--ink-faint);
 }
 
-/* ============ FIELD WORK (MASTER / DETAIL + WRINKLED PAPER) ============ */
+/* ============ FIELD WORK (MASTER / DETAIL + PAPER STACK) ============ */
 .field__lead {
   max-width: 52ch; margin: -1.5rem 0 3rem;
   color: var(--ink-dim); font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.6;
@@ -581,82 +581,83 @@ section { padding: clamp(5rem, 12vh, 11rem) clamp(1.2rem, 6vw, 7rem); position: 
   display: inline-block; margin-top: 1rem;
   font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint);
 }
-.stage__grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
-  gap: 1.8rem 1.5rem; margin-top: 2.2rem; perspective: 1300px;
-}
 
-/* ----- wrinkled paper card ----- */
-.paper {
-  --rot: 0deg;
-  display: block; padding: 0; border: 0; background: none; cursor: none;
-  border-radius: 6px;
+/* ----- the book: pages stacked on top of each other (no cover) ----- */
+.book {
+  position: relative; width: min(100%, 560px); aspect-ratio: 16 / 10;
+  margin: 2.6rem auto 0; perspective: 1900px;
 }
-.paper__sheet {
-  position: relative; display: block; overflow: hidden;
-  aspect-ratio: 16 / 10; border-radius: 5px; background: var(--bg-soft);
-  transform: rotate(var(--rot));
-  box-shadow: 6px 9px 22px rgba(0, 0, 0, .55), inset 0 0 40px rgba(0, 0, 0, .35);
-  transition: transform .6s var(--ease), border-radius .6s var(--ease), box-shadow .6s var(--ease);
+.page {
+  position: absolute; inset: 0; padding: 0; border: 0; background: none; cursor: none;
+  transform-style: preserve-3d; backface-visibility: hidden; will-change: transform, opacity;
 }
-.paper__sheet img {
+.page__sheet {
+  position: absolute; inset: 0; overflow: hidden; border-radius: 5px; background: var(--bg-soft);
+  box-shadow: 0 14px 32px rgba(0,0,0,.55);
+  transition: border-radius .2s ease, box-shadow .2s ease;
+}
+.page__sheet img {
   width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block;
-  filter: brightness(.82) contrast(1.06) saturate(.78) sepia(.14);
-  transition: filter .6s var(--ease), transform .8s var(--ease);
+  filter: brightness(.78) contrast(1.04) saturate(.8) sepia(.1);
+  transition: filter .2s ease, transform .3s ease;
 }
-/* folds / creases */
-.paper__sheet::before {
-  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  background:
-    linear-gradient(122deg, rgba(255,255,255,.10) 0%, transparent 14%, rgba(0,0,0,.22) 30%,
-      transparent 44%, rgba(255,255,255,.07) 58%, transparent 70%, rgba(0,0,0,.20) 86%, transparent 100%),
-    linear-gradient(38deg, transparent 18%, rgba(0,0,0,.16) 36%, transparent 50%,
-      rgba(255,255,255,.06) 66%, transparent 82%);
-  mix-blend-mode: overlay; opacity: 1; transition: opacity .6s var(--ease);
+/* the crumple — fractal-noise relief lit from the upper-left, like real paper */
+.page__crump {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='480'%20height='320'%3E%3Cfilter%20id='c'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.011'%20numOctaves='4'%20seed='8'%20result='n'/%3E%3CfeDiffuseLighting%20in='n'%20surfaceScale='2.6'%20diffuseConstant='1.1'%20lighting-color='%23ffffff'%20result='d'%3E%3CfeDistantLight%20azimuth='235'%20elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23c)'/%3E%3C/svg%3E");
+  background-size: cover;
+  mix-blend-mode: overlay; opacity: .92; transition: opacity .2s ease;
 }
-/* crumple grain */
-.paper__sheet::after {
-  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.02' numOctaves='3' seed='7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay; opacity: .55; transition: opacity .6s var(--ease);
-}
-/* a strip of tape holding the crumpled sheet */
-.paper__tape {
-  position: absolute; z-index: 4; top: -9px; left: 50%; width: 64px; height: 22px;
-  transform: translateX(-50%) rotate(-4deg);
-  background: linear-gradient(180deg, rgba(214,225,245,.30), rgba(214,225,245,.14));
-  border-left: 1px dashed rgba(255,255,255,.25); border-right: 1px dashed rgba(255,255,255,.25);
-  backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px);
-  opacity: 1; transition: opacity .5s var(--ease), transform .6s var(--ease);
-}
-.paper__tag {
+.page__tag {
   position: absolute; z-index: 5; left: .9rem; right: 2.4rem; bottom: .8rem;
   font-family: "Space Grotesk", sans-serif; font-size: .75rem; line-height: 1.3; text-align: left;
-  color: var(--ink); text-shadow: 0 1px 6px rgba(0,0,0,.8);
+  color: var(--ink); text-shadow: 0 1px 7px rgba(0,0,0,.85);
 }
-.paper__exp {
+.page__exp {
   position: absolute; z-index: 5; right: .8rem; bottom: .75rem;
   width: 1.7rem; height: 1.7rem; display: grid; place-items: center;
-  border: 1px solid var(--line); border-radius: 50%; font-size: .85rem;
-  color: var(--cyan-bright); background: rgba(5,7,13,.45);
-  opacity: 0; transition: opacity .45s var(--ease), background .4s var(--ease), border-color .4s var(--ease), transform .45s var(--ease);
+  border: 1px solid var(--line); border-radius: 50%; font-size: .85rem; cursor: none;
+  color: var(--cyan-bright); background: rgba(5,7,13,.5);
+  opacity: 0; transition: opacity .2s ease, background .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease);
 }
 
-/* hover / focus → un-crumple into a clean sheet */
-.paper:hover .paper__sheet,
-.paper:focus-visible .paper__sheet {
-  transform: rotate(0deg) translateY(-8px) scale(1.035);
+/* hover / focus on the TOP page → flatten into a clean sheet, RAPIDLY */
+.page:hover .page__sheet, .page:focus-visible .page__sheet {
   border-radius: 16px;
   box-shadow: 0 26px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(124,196,255,.28);
 }
-.paper:hover .paper__sheet::before, .paper:focus-visible .paper__sheet::before,
-.paper:hover .paper__sheet::after,  .paper:focus-visible .paper__sheet::after { opacity: 0; }
-.paper:hover .paper__sheet img, .paper:focus-visible .paper__sheet img {
-  filter: none; transform: scale(1.05);
+.page:hover .page__crump, .page:focus-visible .page__crump { opacity: 0; }
+.page:hover .page__sheet img, .page:focus-visible .page__sheet img { filter: none; transform: scale(1.05); }
+.page:hover .page__exp, .page:focus-visible .page__exp { opacity: 1; }
+.page:hover .page__exp { transform: rotate(45deg); }
+
+/* flip-through controls under the stack */
+.book__nav {
+  display: flex; align-items: center; justify-content: center; gap: 1rem;
+  margin-top: 1.6rem; flex-wrap: wrap;
 }
-.paper:hover .paper__tape, .paper:focus-visible .paper__tape { opacity: 0; transform: translateX(-50%) rotate(-4deg) translateY(-10px); }
-.paper:hover .paper__exp, .paper:focus-visible .paper__exp { opacity: 1; }
-.paper:hover .paper__exp { transform: rotate(45deg); }
+.book__btn {
+  width: 2.5rem; height: 2.5rem; display: grid; place-items: center; cursor: none;
+  border: 1px solid var(--line); border-radius: 50%; color: var(--ink); font-size: 1.25rem; line-height: 1;
+  background: linear-gradient(160deg, rgba(137,150,180,.06), rgba(10,14,26,.55));
+  transition: background .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease);
+}
+.book__btn:hover { background: rgba(124,196,255,.16); border-color: rgba(124,196,255,.5); transform: translateY(-2px); }
+.book__counter {
+  font-family: "Syne", sans-serif; font-weight: 700; font-size: .82rem; letter-spacing: .1em;
+  color: var(--ink-dim); min-width: 5.5ch; text-align: center;
+}
+.book__hint {
+  width: 100%; text-align: center; margin-top: .2rem;
+  font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint);
+}
+
+/* no-GSAP / reduced-motion fallback: lay the pages out as a plain grid */
+.book.is-static {
+  width: 100%; aspect-ratio: auto; perspective: none; margin-top: 2.2rem;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 1.6rem 1.4rem;
+}
+.book.is-static .page { position: relative; inset: auto; aspect-ratio: 16 / 10; }
 
 .field__pdf {
   display: inline-flex; align-items: center; gap: .6rem; margin-top: 2.4rem;
@@ -675,7 +676,6 @@ section { padding: clamp(5rem, 12vh, 11rem) clamp(1.2rem, 6vw, 7rem); position: 
   }
   .nav-group { flex: none; }
   .field__navlist { white-space: nowrap; }
-  .stage__grid { grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 1.3rem 1rem; }
 }
 
 /* ============ LIGHTBOX ============ */

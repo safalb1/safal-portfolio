@@ -1,7 +1,9 @@
 // ============================================================
-//  FIELD WORK — master/detail: categories left, wrinkled-paper cards right.
-//  Hovering a card un-crumples it into a clean sheet; switching a category
-//  plays a 3D paper-unfold. Data from js/field-data.js (window.FIELD_SHOTS).
+//  FIELD WORK — categories left; right side is a STACK of screenshots
+//  laid on top of each other like the pages of a (coverless) book.
+//  Each page rests crumpled; hover/focus un-crumples it RAPIDLY into a
+//  clean sheet. Click a page to flip to the next; the ↗ opens the
+//  lightbox. Data from js/field-data.js (window.FIELD_SHOTS).
 // ============================================================
 (function () {
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -11,11 +13,11 @@
   const SHOTS = window.FIELD_SHOTS;
   const BASE = "assets/work/";
   const gsapOK = window.gsap && !prefersReduced;
+  const VIS = 5; // how many pages of the pile peek out behind the top one
   const nav = section.querySelector(".field__nav");
   const stage = section.querySelector(".field__stage");
   if (!nav || !stage) return;
 
-  // ---- domains + category metadata ----
   const DOMAINS = [
     { key: "ai", label: "AI / LLM Training" },
     { key: "cv", label: "Data Annotation" },
@@ -61,9 +63,9 @@
   const cursorEl = document.getElementById("cursor");
   function bindCursor(root) {
     if (!cursorEl) return;
-    root.querySelectorAll("[data-cursor='hover']").forEach((el2) => {
-      el2.addEventListener("mouseenter", () => cursorEl.classList.add("is-hover"));
-      el2.addEventListener("mouseleave", () => cursorEl.classList.remove("is-hover"));
+    root.querySelectorAll("[data-cursor='hover']").forEach((e) => {
+      e.addEventListener("mouseenter", () => cursorEl.classList.add("is-hover"));
+      e.addEventListener("mouseleave", () => cursorEl.classList.remove("is-hover"));
     });
   }
   const el = (tag, cls, html) => {
@@ -73,6 +75,7 @@
     return n;
   };
   const rand = (a, b) => a + Math.random() * (b - a);
+  const pad = (n) => String(n).padStart(2, "0");
 
   // ---------------------------------------------------------
   //  LEFT NAV
@@ -97,41 +100,51 @@
     nav.appendChild(group);
   });
   bindCursor(nav);
-
-  function setActiveNav(btn) {
-    allItems.forEach((b) => b.classList.toggle("is-on", b === btn));
-  }
+  const setActiveNav = (btn) => allItems.forEach((b) => b.classList.toggle("is-on", b === btn));
 
   // ---------------------------------------------------------
-  //  RIGHT STAGE
+  //  RIGHT STAGE — the page stack
   // ---------------------------------------------------------
   function renderStage(meta) {
     const files = SHOTS[meta.id] || [];
+    const N = files.length;
     stage.innerHTML = "";
 
-    const head = el("div", "stage__head",
+    stage.appendChild(el("div", "stage__head",
       `<span class="stage__no">${meta.no}</span>
        <h3>${meta.title}</h3>
        <p>${meta.desc}</p>
-       <span class="stage__count">${files.length} ${files.length === 1 ? "capture" : "captures"}</span>`);
-    stage.appendChild(head);
+       <span class="stage__count">${N} ${N === 1 ? "capture" : "captures"}</span>`));
 
-    const grid = el("div", "stage__grid");
-    files.forEach((file, idx) => {
+    const book = el("div", "book" + (gsapOK ? "" : " is-static"));
+    const restRot = [];
+    const pageEls = files.map((file, i) => {
+      restRot[i] = rand(-4, 4);
       const cap = caption(file);
-      const card = el("button", "paper",
-        `<span class="paper__sheet">
+      const pg = el("button", "page",
+        `<span class="page__sheet">
            <img src="${BASE}${file}" alt="${cap.replace(/"/g, "&quot;")}" loading="lazy" />
-           <span class="paper__tape" aria-hidden="true"></span>
-           <span class="paper__tag">${cap}</span>
-           <span class="paper__exp" aria-hidden="true">↗</span>
+           <span class="page__crump" aria-hidden="true"></span>
+           <span class="page__tag">${cap}</span>
+           <span class="page__exp" aria-hidden="true" data-exp>↗</span>
          </span>`);
-      card.style.setProperty("--rot", rand(-3.2, 3.2).toFixed(2) + "deg");
-      card.setAttribute("data-cursor", "hover");
-      card.addEventListener("click", () => openLightbox(files, idx, meta));
-      grid.appendChild(card);
+      pg.setAttribute("data-cursor", "hover");
+      book.appendChild(pg);
+      return pg;
     });
-    stage.appendChild(grid);
+    stage.appendChild(book);
+
+    // flip controls + counter
+    let nav2 = null, counterEl = null;
+    if (N > 1 && gsapOK) {
+      nav2 = el("div", "book__nav",
+        `<button class="book__btn" data-dir="-1" aria-label="Previous page">‹</button>
+         <span class="book__counter"></span>
+         <button class="book__btn" data-dir="1" aria-label="Next page">›</button>
+         <span class="book__hint">click page to flip · ↗ to expand</span>`);
+      stage.appendChild(nav2);
+      counterEl = nav2.querySelector(".book__counter");
+    }
 
     if (meta.pdf) {
       const a = el("a", "field__pdf",
@@ -141,48 +154,124 @@
       stage.appendChild(a);
     }
     bindCursor(stage);
-  }
 
-  function animateIn() {
-    if (!gsapOK) return;
-    const head = stage.querySelector(".stage__head");
-    const papers = stage.querySelectorAll(".paper");
-    const pdf = stage.querySelector(".field__pdf");
-    if (head) gsap.fromTo(head.children,
-      { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out", stagger: 0.05, overwrite: true });
-    gsap.fromTo(papers,
-      { opacity: 0, y: 36, scale: 0.55, rotationZ: () => rand(-14, 14), rotationX: -55,
-        transformOrigin: "50% 100%", filter: "blur(7px) brightness(0.35)" },
-      { opacity: 1, y: 0, scale: 1, rotationZ: 0, rotationX: 0, filter: "blur(0px) brightness(1)",
-        duration: 0.85, ease: "back.out(1.35)", stagger: { each: 0.045, from: "start" }, overwrite: true,
-        clearProps: "transform,filter" });
-    if (pdf) gsap.fromTo(pdf, { opacity: 0 }, { opacity: 1, duration: 0.6, delay: 0.3 });
+    // ---- non-animated fallback: pages already flow as a grid (CSS) ----
+    if (!gsapOK) {
+      pageEls.forEach((pg, i) => {
+        pg.querySelector("[data-exp]").addEventListener("click", (e) => {
+          e.stopPropagation(); openLightbox(files, i, meta);
+        });
+        pg.addEventListener("click", () => openLightbox(files, i, meta));
+      });
+      return;
+    }
+
+    // ---- animated stack ----
+    let order = files.map((_, i) => i);
+    let busy = false;
+
+    const varsFor = (idx, p) => {
+      const depth = Math.min(p, VIS);
+      const top = p === 0;
+      return {
+        x: top ? 0 : depth * 7,
+        y: top ? 0 : depth * 9,
+        rotation: restRot[idx],
+        rotationY: 0,
+        scale: top ? 1 : 1 - depth * 0.02,
+        zIndex: 1000 - p,
+        autoAlpha: p <= VIS ? 1 : 0,
+        transformOrigin: "center center",
+      };
+    };
+    function layout(animate, skipTop) {
+      order.forEach((idx, p) => {
+        const tgt = pageEls[idx];
+        tgt.style.pointerEvents = p === 0 ? "auto" : "none";
+        if (skipTop && p === 0) return;
+        const v = varsFor(idx, p);
+        animate ? gsap.to(tgt, { ...v, duration: 0.5, ease: "power3.out" }) : gsap.set(tgt, v);
+      });
+    }
+    const updateCounter = () => { if (counterEl) counterEl.textContent = `${pad(order[0] + 1)} / ${N}`; };
+
+    // rapid wrapper straighten on top-page hover (children flatten via CSS)
+    let hovered = null;
+    pageEls.forEach((pg) => {
+      pg.addEventListener("mouseenter", () => {
+        if (pg.style.pointerEvents === "none") return;
+        hovered = pg;
+        gsap.to(pg, { rotation: 0, y: -12, scale: 1.05, duration: 0.16, ease: "power2.out", overwrite: "auto" });
+      });
+      pg.addEventListener("mouseleave", () => {
+        if (hovered !== pg) return;
+        hovered = null;
+        gsap.to(pg, { ...varsFor(order[0], 0), duration: 0.3, ease: "power2.out", overwrite: "auto" });
+      });
+      pg.addEventListener("click", (e) => {
+        if (e.target.closest("[data-exp]")) return;
+        flip(1);
+      });
+      pg.querySelector("[data-exp]").addEventListener("click", (e) => {
+        e.stopPropagation(); openLightbox(files, order[0], meta);
+      });
+    });
+
+    function flip(dir) {
+      if (busy || N < 2) return;
+      busy = true; hovered = null;
+      if (dir > 0) {
+        const leaving = pageEls[order[0]];
+        gsap.to(leaving, {
+          rotationY: -158, x: "-58%", autoAlpha: 0, duration: 0.55,
+          ease: "power2.in", transformOrigin: "left center",
+          onComplete: () => {
+            order.push(order.shift());
+            gsap.set(leaving, { rotationY: 0, x: 0 });
+            layout(true); updateCounter(); busy = false;
+          },
+        });
+      } else {
+        order.unshift(order.pop());
+        const incoming = pageEls[order[0]];
+        gsap.set(incoming, { zIndex: 1500, rotationY: -158, x: "-58%", autoAlpha: 0, transformOrigin: "left center" });
+        layout(true, true); // settle the rest of the pile
+        gsap.to(incoming, {
+          rotationY: 0, x: 0, autoAlpha: 1, duration: 0.55, ease: "power2.out",
+          onComplete: () => { gsap.set(incoming, { zIndex: 1000 }); updateCounter(); busy = false; },
+        });
+      }
+    }
+    if (nav2) nav2.querySelectorAll(".book__btn").forEach((b) =>
+      b.addEventListener("click", () => flip(+b.dataset.dir)));
+
+    layout(false);
+    updateCounter();
+
+    // intro: the pile drops/settles into place
+    gsap.from(book.children, {
+      y: 46, autoAlpha: 0, rotationX: -35, transformOrigin: "50% 100%",
+      duration: 0.7, ease: "back.out(1.3)", stagger: 0.035,
+    });
+    gsap.from(stage.querySelector(".stage__head").children,
+      { y: 18, autoAlpha: 0, duration: 0.6, ease: "expo.out", stagger: 0.05 });
   }
 
   function select(meta, btn) {
     if (current === meta) return;
     setActiveNav(btn);
-    const grid = stage.querySelector(".stage__grid");
-    const papers = grid ? [...grid.querySelectorAll(".paper")] : [];
-    const swap = () => { renderStage(meta); animateIn(); current = meta;
-      if (window.ScrollTrigger) ScrollTrigger.refresh(); };
-    if (gsapOK && papers.length) {
-      gsap.to(papers, {
-        opacity: 0, scale: 0.6, y: 16, rotationZ: () => rand(-12, 12), rotationX: -40,
-        transformOrigin: "50% 100%", filter: "blur(6px) brightness(0.5)",
-        duration: 0.3, ease: "power2.in", stagger: { each: 0.02, from: "end" }, onComplete: swap,
-      });
-    } else swap();
+    const finish = () => { renderStage(meta); current = meta; if (window.ScrollTrigger) ScrollTrigger.refresh(); };
+    const old = stage.children.length ? [...stage.children] : null;
+    if (gsapOK && old) {
+      gsap.to(old, { autoAlpha: 0, y: 14, duration: 0.26, ease: "power2.in", onComplete: finish });
+    } else finish();
   }
 
-  // initial: first category, rendered at rest; unfold once when scrolled into view
+  // initial render (first category)
   const firstBtn = allItems[0];
   setActiveNav(firstBtn);
   renderStage(firstBtn._meta);
   current = firstBtn._meta;
-  if (gsapOK && window.ScrollTrigger) {
-    ScrollTrigger.create({ trigger: stage, start: "top 82%", once: true, onEnter: animateIn });
-  }
 
   // ---------------------------------------------------------
   //  LIGHTBOX (pages through the whole category)
