@@ -97,7 +97,7 @@ main { position: relative; z-index: 2; }
   top: 0; left: 0;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 10050;
   mix-blend-mode: difference;
 }
 .cursor {
@@ -604,9 +604,9 @@ section { padding: clamp(5rem, 12vh, 11rem) clamp(1.2rem, 6vw, 7rem); position: 
 /* the crumple — fractal-noise relief lit from the upper-left, like real paper */
 .page__crump {
   position: absolute; inset: 0; z-index: 3; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='480'%20height='320'%3E%3Cfilter%20id='c'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.011'%20numOctaves='4'%20seed='8'%20result='n'/%3E%3CfeDiffuseLighting%20in='n'%20surfaceScale='2.6'%20diffuseConstant='1.1'%20lighting-color='%23ffffff'%20result='d'%3E%3CfeDistantLight%20azimuth='235'%20elevation='58'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23c)'/%3E%3C/svg%3E");
+  background-image: url("../assets/work/paper.png");
   background-size: cover;
-  mix-blend-mode: overlay; opacity: .92; transition: opacity .2s ease;
+  mix-blend-mode: overlay; opacity: .95; transition: opacity .2s ease;
 }
 .page__tag {
   position: absolute; z-index: 5; left: .9rem; right: 2.4rem; bottom: .8rem;

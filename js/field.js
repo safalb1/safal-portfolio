@@ -141,7 +141,7 @@
         `<button class="book__btn" data-dir="-1" aria-label="Previous page">‹</button>
          <span class="book__counter"></span>
          <button class="book__btn" data-dir="1" aria-label="Next page">›</button>
-         <span class="book__hint">click page to flip · ↗ to expand</span>`);
+         <span class="book__hint">click page to open · ‹ › to flip</span>`);
       stage.appendChild(nav2);
       counterEl = nav2.querySelector(".book__counter");
     }
@@ -208,13 +208,7 @@
         hovered = null;
         gsap.to(pg, { ...varsFor(order[0], 0), duration: 0.3, ease: "power2.out", overwrite: "auto" });
       });
-      pg.addEventListener("click", (e) => {
-        if (e.target.closest("[data-exp]")) return;
-        flip(1);
-      });
-      pg.querySelector("[data-exp]").addEventListener("click", (e) => {
-        e.stopPropagation(); openLightbox(files, order[0], meta);
-      });
+      pg.addEventListener("click", () => openLightbox(files, order[0], meta));
     });
 
     function flip(dir) {
