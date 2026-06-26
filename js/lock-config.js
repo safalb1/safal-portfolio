@@ -3,7 +3,7 @@
 window.LOCK = {
   email: "safbhalerao@gmail.com",
   enc: "assets/work/enc/",
-  salt: "+/7YV8snirOeipgm3EE68g==",
+  salt: "tQPIcSENaeSlOn4COHq1kA==",
   iter: 150000,
-  verifier: "HLkT0gAeFQ44nG9z7tIifMUcZbTZ97nTDNieDaS3odshhRf9vrtV5mhpaB8EYw=="
+  verifier: "ls+1ULNqPttq3W4mN9w4Q/sFOyWGWx6nEFVMgeemCzlfNijGCGZAVgaSd+p50w=="
 };
