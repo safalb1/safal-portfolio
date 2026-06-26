@@ -163,7 +163,6 @@
       if (!pass) return;
       status.textContent = "Checking…";
       if (await tryUnlock(pass)) {
-        try { sessionStorage.setItem("fieldPass", pass); } catch (_) {}
         reveal();
       } else {
         status.textContent = "Incorrect passphrase.";
@@ -172,12 +171,38 @@
       }
     });
   }
+  // unlock is in-memory only (a refresh re-locks) and expires after inactivity
+  let idleTimer = null;
+  const IDLE_MS = 5 * 60 * 1000; // 5 minutes
+  function armIdle() { clearTimeout(idleTimer); idleTimer = setTimeout(relock, IDLE_MS); }
+
   function reveal() {
     unlocked = true;
     document.querySelectorAll(".book").forEach((b) => b.classList.remove("is-locked"));
     section.querySelectorAll(".field__stage img[data-file]").forEach(fillImg);
     if (lockBar) lockBar.classList.add("is-gone");
+    armIdle();
   }
+  function relock() {
+    if (!LOCK || !unlocked) return;
+    unlocked = false; KEY = null; clearTimeout(idleTimer);
+    Object.values(blobCache).forEach((u) => URL.revokeObjectURL(u));
+    for (const k in blobCache) delete blobCache[k];
+    if (lb && lb.classList.contains("is-open")) {
+      lb.classList.remove("is-open"); lb.setAttribute("aria-hidden", "true");
+      document.documentElement.style.overflow = ""; if (window.__lenis) window.__lenis.start();
+    }
+    document.querySelectorAll(".book").forEach((b) => b.classList.add("is-locked"));
+    section.querySelectorAll(".field__stage img[data-file]").forEach((img) => img.removeAttribute("src"));
+    if (lockBar) {
+      lockBar.classList.remove("is-gone");
+      const inp = lockBar.querySelector(".field__lock__input"); if (inp) inp.value = "";
+      const st = lockBar.querySelector(".field__lock__status"); if (st) st.textContent = "";
+    }
+  }
+  // any interaction resets the 5-min idle timer (only while unlocked)
+  ["mousemove", "keydown", "scroll", "touchstart", "pointerdown", "click"].forEach((ev) =>
+    window.addEventListener(ev, () => { if (unlocked) armIdle(); }, { passive: true }));
 
   // ---------------------------------------------------------
   //  RIGHT STAGE — the page stack
@@ -353,12 +378,7 @@
   renderStage(firstBtn._meta);
   current = firstBtn._meta;
 
-  // auto-unlock for the session if the passphrase was already entered
-  if (LOCK) {
-    let saved = null;
-    try { saved = sessionStorage.getItem("fieldPass"); } catch (_) {}
-    if (saved) tryUnlock(saved).then((ok) => { if (ok) reveal(); });
-  }
+  // (no persistence — refreshing the page always returns to the locked state)
 
   // ---------------------------------------------------------
   //  LIGHTBOX
