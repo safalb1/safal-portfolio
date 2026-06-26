@@ -1,3 +1,8 @@
 .DS_Store
 Thumbs.db
 node_modules/
+
+# locked work originals — keep local, never deploy (only enc/*.enc is served)
+assets/work/*.jpg
+assets/work/*.jpeg
+assets/work/data-annotation-casestudy.pdf

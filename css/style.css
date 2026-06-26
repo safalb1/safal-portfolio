@@ -606,6 +606,69 @@ section { padding: clamp(5rem, 12vh, 11rem) clamp(1.2rem, 6vw, 7rem); position: 
   font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint);
 }
 
+/* ----- access lock bar ----- */
+.field__lock {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.1rem;
+  margin: 0 0 2.4rem; padding: 1.1rem 1.3rem;
+  border: 1px solid var(--line); border-radius: 16px;
+  background: linear-gradient(160deg, rgba(255,107,74,.08), rgba(10,14,26,.55));
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.field__lock.is-gone { display: none; }
+.field__lock__ico { font-size: 1.2rem; filter: drop-shadow(0 0 8px rgba(255,107,74,.5)); }
+.field__lock__msg { flex: 1 1 280px; min-width: 240px; color: var(--ink-dim); font-size: .92rem; line-height: 1.5; }
+.field__lock__msg strong { color: var(--ink); font-weight: 600; }
+.field__lock__row { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; }
+.field__lock__req {
+  cursor: none; border: 1px solid transparent; border-radius: 40px; padding: .55rem 1.1rem;
+  font-family: "Syne", sans-serif; font-weight: 700; font-size: .82rem; color: var(--bg);
+  background: linear-gradient(120deg, var(--cyan-bright), var(--coral));
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.field__lock__req:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(255,107,74,.35); }
+.field__lock__form { display: flex; gap: .5rem; }
+.field__lock__input {
+  width: clamp(120px, 22vw, 200px); cursor: text;
+  background: rgba(5,7,13,.5); border: 1px solid var(--line); border-radius: 40px;
+  padding: .5rem .95rem; color: var(--ink); font-family: "Space Grotesk", sans-serif; font-size: .85rem;
+}
+.field__lock__input::placeholder { color: var(--ink-faint); }
+.field__lock__input:focus { outline: none; border-color: rgba(124,196,255,.5); }
+.field__lock__go {
+  cursor: none; border: 1px solid var(--line); border-radius: 40px; padding: .5rem 1.1rem;
+  font-family: "Syne", sans-serif; font-weight: 700; font-size: .82rem; color: var(--ink);
+  background: rgba(137,150,180,.08); transition: background .3s var(--ease), border-color .3s var(--ease);
+}
+.field__lock__go:hover { background: rgba(124,196,255,.16); border-color: rgba(124,196,255,.5); }
+.field__lock__status { flex-basis: 100%; font-size: .78rem; color: var(--coral); letter-spacing: .04em; min-height: 1em; }
+.field__lock.shake { animation: lock-shake .45s; }
+@keyframes lock-shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); } 40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); } 80% { transform: translateX(3px); }
+}
+
+/* ----- locked page: frosted, no image, lock badge (title stays visible) ----- */
+.page__lock { display: none; }
+.book.is-locked .page__sheet img { visibility: hidden; }
+.book.is-locked .page__crump { opacity: .35; }
+.book.is-locked .page__sheet {
+  background:
+    radial-gradient(120% 90% at 50% 18%, rgba(255,107,74,.16), transparent 60%),
+    repeating-linear-gradient(135deg, rgba(137,150,180,.05) 0 7px, rgba(137,150,180,.10) 7px 14px),
+    var(--bg-soft);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.book.is-locked .page__lock {
+  display: grid; place-items: center; position: absolute; inset: 0; z-index: 4; pointer-events: none;
+}
+.book.is-locked .page__lock-ico {
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  filter: drop-shadow(0 2px 10px rgba(0,0,0,.6)); opacity: .92;
+}
+/* keep the ↗ hidden while locked; the whole page acts as "request access" */
+.book.is-locked .page__exp { display: none; }
+
 /* ----- the book: pages stacked on top of each other (no cover) ----- */
 .book {
   position: relative; width: min(100%, 560px); aspect-ratio: 16 / 10;
