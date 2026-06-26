@@ -173,7 +173,7 @@
   }
   // unlock is in-memory only (a refresh re-locks) and expires after inactivity
   let idleTimer = null;
-  const IDLE_MS = 5 * 60 * 1000; // 5 minutes
+  const IDLE_MS = 3 * 60 * 1000; // 3 minutes of inactivity -> re-lock
   function armIdle() { clearTimeout(idleTimer); idleTimer = setTimeout(relock, IDLE_MS); }
 
   function reveal() {
